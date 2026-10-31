@@ -22,7 +22,7 @@ import { pushSupported, enablePush, disablePush, sendTestPush, syncPushSubscript
 import { wakeLockSupported } from '../lib/wakelock.js'
 import { t, tn, LANGS, INSTR_LANGS, EXERCISE_NAME_LANGS, baseLang, dateLocale } from '../lib/i18n.js'
 import { effectiveLang } from '../lib/default-lang.js'
-import { DEMO, REPO } from '../lib/demo.js'
+import { DEMO, PERSONAL, REPO } from '../lib/demo.js'
 import { MOBILE, isAndroid, shareExport, shareExportBlob, syncReminder } from '../lib/mobile.js'
 import { NUDGE_COPY, NUDGE_TONES, toneOf } from '../lib/nudge.js'
 import { referencedFiles } from '../lib/media-refs.js'
@@ -991,8 +991,9 @@ export default function Settings({ page = null, find = null, via = null, entryKe
           build there is no address bar and no about box, so without this there is no way to tell
           which build you are running, or whether an update actually installed. */}
       <div className="dim small sp-version">
-        openGym v{__APP_VERSION__} · {t('free & open source (AGPL v3)')}<br />
-        <a href="https://github.com/DuarteSantos8/openGym" target="_blank" rel="noopener">{t('Source code')}</a><br />
+        Gearly v{__APP_VERSION__} · {t('free & open source (AGPL v3)')}<br />
+        {t('Gearly is based on openGym, free software under the AGPL.')}<br />
+        <a href="https://github.com/YPUF-04/opengym" target="_blank" rel="noopener">{t('Source code')}</a> · <a href="https://github.com/DuarteSantos8/openGym" target="_blank" rel="noopener">openGym</a><br />
         {/* Attribution the media licence asks for word for word (agreement §8c), so it is not translated */}
         Exercise media © Aliaksandr Makatserchyk, <a href="https://gymvisual.com/" target="_blank" rel="noopener">Gym visual</a>, gymvisual.com.
         Media licensed for use in openGym only; see <a href="https://github.com/DuarteSantos8/openGym/blob/main/NOTICE.md" target="_blank" rel="noopener">NOTICE.md</a>
@@ -1014,13 +1015,15 @@ export default function Settings({ page = null, find = null, via = null, entryKe
 
       {/* account (demo and mobile builds have nothing to sign in to) */}
       {/* A local-only phone has no account to hand another device a code for (#551). */}
-      {!(MOBILE && user) && <Section title={MOBILE ? t('Your data') : DEMO ? t('Demo') : t('Account')}
+      {!(MOBILE && user) && <Section title={MOBILE || PERSONAL ? t('Your data') : DEMO ? t('Demo') : t('Account')}
         footer={MOBILE ? t('Signing in on your computer too needs your own server. Connect this phone to it, and Add another device then gives the computer a code.') : null}>
         {MOBILE ? <>
           <Row icon="lock" iconTint="var(--acc)" title={t('All data stays on this phone')} subtitle={t('No account, no cloud. Back it up anytime in Data & backup.')} />
           <Row icon="cloud" iconTint="var(--indigo)" title={t('Connect to my server')} subtitle={t('Sync this device to your own self-hosted openGym instead.')} accessory="chevron"
             onClick={connectServer} />
           <KeptChangesRows />
+        </> : PERSONAL ? <>
+          <Row icon="lock" iconTint="var(--acc)" title={t('All data stays on this device')} subtitle={t('Stored in this browser only. Export a backup in Data & backup now and then.')} />
         </> : DEMO ? <>
           <Row icon="info" iconTint="var(--acc)" title={t('You’re in the demo')} subtitle={t('Example data, stored only in this browser. Go wild and change anything you like.')} />
           <Row icon="reset" iconTint="var(--blue)" title={t('Reset demo data')} accessory="chevron"
@@ -1098,7 +1101,8 @@ function SettingsRoot({ ctx, preview, open, user, sync, home, go, entryKey }) {
   const set = v => { lastQuery = { q: v, key }; setQ(v) }
   const hits = q.trim() ? searchSettings(q, ctx) : null
   // The account card: who this is, and the one line that matters about it.
-  const acct = DEMO ? { title: t('Demo'), sub: t('Example data, only in this browser.') }
+  const acct = PERSONAL ? { title: t('Your data'), sub: t('Stored in this browser only. Export a backup in Data & backup now and then.') }
+    : DEMO ? { title: t('Demo'), sub: t('Example data, only in this browser.') }
     : user ? {
       title: user.name || t('Account'),
       sub: sync && sync.status && sync.status !== 'ok' ? t('Sync needs a look') : MOBILE ? t('Synced with your server') : t('Account, devices and sync'),
