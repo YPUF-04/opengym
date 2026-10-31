@@ -2690,4 +2690,20 @@ export default {
   // Daily tracker (views/Daily.jsx)
   'All data stays on this device': 'All data stays on this device',
   'Stored in this browser only. Export a backup in Data & backup now and then.': 'Stored in this browser only. Export a backup in Data & backup now and then.',
+  // Daily tracker (views/Daily.jsx)
+  'Gearly': 'Gearly',
+  // Daily tracker (views/Daily.jsx)
+  'Open this page in Safari (not Chrome).': 'Open this page in Safari (not Chrome).',
+  'Tap the Share button at the bottom (the square with an arrow).': 'Tap the Share button at the bottom (the square with an arrow).',
+  'Scroll down and tap Add to Home Screen, then Add.': 'Scroll down and tap Add to Home Screen, then Add.',
+  'Open Gearly from the home screen: full screen, works offline.': 'Open Gearly from the home screen: full screen, works offline.',
+  'Install on iPhone': 'Install on iPhone',
+  'Your data stays on this phone. Export a backup in Settings now and then.': 'Your data stays on this phone. Export a backup in Settings now and then.',
+  'Gearly on your phone': 'Gearly on your phone',
+  'Install it like an app: on its own icon, full screen, also offline.': 'Install it like an app: on its own icon, full screen, also offline.',
+  'Android': 'Android',
+  'iPhone': 'iPhone',
+  'Download for Android': 'Download for Android',
+  'The APK from GitHub. Open it on the phone to install.': 'The APK from GitHub. Open it on the phone to install.',
+  'Safari: Share, then Add to Home Screen': 'Safari: Share, then Add to Home Screen',
 }

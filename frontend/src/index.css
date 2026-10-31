@@ -19,21 +19,22 @@
 /* ---------------------------------------------------------------- tokens -- */
 :root {
   /* surfaces — dark is the default */
-  --bg:        #000000;
-  --bg-el:     #0e0e10;   /* elevated backdrop (sheets, bars) */
-  --surface:   #1c1c1e;   /* card / grouped-list fill */
-  --surface-2: #2c2c2e;   /* pressed + nested fill */
-  --surface-3: #3a3a3c;   /* controls (segmented track, switch off) */
+  /* Gearly: a deep ink ramp with a cool cast instead of neutral black and grey */
+  --bg:        #070b12;
+  --bg-el:     #0b111b;   /* elevated backdrop (sheets, bars) */
+  --surface:   #111925;   /* card / grouped-list fill */
+  --surface-2: #1a2433;   /* pressed + nested fill */
+  --surface-3: #253244;   /* controls (segmented track, switch off) */
 
   /* text */
-  --label:     #ffffff;
-  --label-2:   rgba(235,235,245,.60);
-  --label-3:   rgba(235,235,245,.32);
-  --label-4:   rgba(235,235,245,.18);
+  --label:     #f3f7fb;
+  --label-2:   rgba(214,226,240,.62);
+  --label-3:   rgba(214,226,240,.34);
+  --label-4:   rgba(214,226,240,.18);
 
   /* lines */
-  --sep:       rgba(84,84,88,.60);
-  --sep-op:    rgba(84,84,88,.34);   /* for edges sitting over blur */
+  --sep:       rgba(84,104,130,.55);
+  --sep-op:    rgba(84,104,130,.32);   /* for edges sitting over blur */
   --hair:      .5px;
 
   /* system palette (iOS dark values) */
@@ -41,10 +42,12 @@
   --yellow:#ffd60a; --teal:#40c8e0; --indigo:#5e5ce6; --pink:#ff375f;
   --purple:#bf5af2; --mint:#63e6e2; --brown:#ac8e68; --grey:#8e8e93;
 
-  /* accent (per-account, synced) */
-  --acc:  var(--green);
-  --acc-2:#248a3d;
-  --on-acc:#000000;
+  /* accent (per-account, synced); Gearly's own calm blue is the default */
+  --acc:  #5aa9e6;
+  --acc-2:#3f8fcf;
+  --on-acc:#061321;
+  /* the filled accent: a gradient for Gearly's own accent, the flat colour for every other one */
+  --acc-fill: var(--acc);
   --acc-soft: color-mix(in srgb, var(--acc) 16%, transparent);
   --acc-line: color-mix(in srgb, var(--acc) 38%, transparent);
 
@@ -70,19 +73,19 @@
 }
 
 :root[data-theme="light"] {
-  --bg:        #f2f2f7;
-  --bg-el:     #f7f7fa;
+  --bg:        #f2f6fa;
+  --bg-el:     #f7fafc;
   --surface:   #ffffff;
-  --surface-2: #ececef;
-  --surface-3: #e3e3e8;
+  --surface-2: #e9eff5;
+  --surface-3: #dde5ee;
 
-  --label:     #000000;
-  --label-2:   rgba(60,60,67,.60);
-  --label-3:   rgba(60,60,67,.30);
-  --label-4:   rgba(60,60,67,.16);
+  --label:     #0a1320;
+  --label-2:   rgba(44,62,84,.64);
+  --label-3:   rgba(44,62,84,.32);
+  --label-4:   rgba(44,62,84,.16);
 
-  --sep:       rgba(60,60,67,.29);
-  --sep-op:    rgba(60,60,67,.20);
+  --sep:       rgba(44,62,84,.22);
+  --sep-op:    rgba(44,62,84,.15);
 
   --blue:#007aff; --green:#34c759; --red:#ff3b30; --orange:#ff9500;
   --yellow:#ffcc00; --teal:#30b0c7; --indigo:#5856d6; --pink:#ff2d55;
@@ -91,7 +94,11 @@
   --on-acc:#ffffff;
 }
 
-/* accents — Apple's system colours, so a recolour never looks off-system */
+/* accents — Gearly's calm blue (the default), then Apple's system colours */
+:root[data-accent="gearly"]{ --acc:#5aa9e6; --acc-2:#3f8fcf; --on-acc:#061321;
+  --acc-fill:linear-gradient(135deg,#6cb6ef 0%,#5aa9e6 45%,#5bc4c4 100%) }
+:root[data-theme="light"][data-accent="gearly"]{ --acc:#2a76b8; --acc-2:#1f5f97; --on-acc:#fff;
+  --acc-fill:linear-gradient(135deg,#2f7fc4 0%,#2a76b8 50%,#23908f 100%) }
 :root[data-accent="lime"]  { --acc:var(--green);  --acc-2:#248a3d; --on-acc:#000 }
 :root[data-accent="sky"]   { --acc:var(--blue);   --acc-2:#0060df; --on-acc:#fff }
 :root[data-accent="orange"]{ --acc:var(--orange); --acc-2:#c76b00; --on-acc:#000 }
@@ -416,7 +423,7 @@ h4.sec{
 }
 .btn .icn{font-size:19px}
 .btn:active{transform:scale(.975)}
-.btn.primary{background:var(--acc);color:var(--on-acc)}
+.btn.primary{background:var(--acc-fill,var(--acc));color:var(--on-acc)}
 .btn.primary:active{background:var(--acc-2)}
 .btn.tinted{background:var(--acc-soft);color:var(--acc)}
 .btn.danger{background:rgba(255,69,58,0.15);background:color-mix(in srgb,var(--red) 15%,transparent);color:var(--red)}
@@ -2385,3 +2392,15 @@ button.wl-summary{width:100%;padding:0 0 10px;text-align:start;border-radius:var
 .dly-home .lbl2{font-size:11px;font-weight:500;letter-spacing:.03em;text-transform:uppercase;color:var(--label-3)}
 .dly-home .ttl{font-weight:600;font-size:17px;line-height:1.25;letter-spacing:-.012em;margin-top:2px}
 .dly-home .ss{font-size:13px;color:var(--label-2,var(--grey));margin-top:2px;line-height:1.35}
+
+/* Gearly: the brand gradient on the round Start button, and a soft glow under it */
+:root[data-accent="gearly"] #tabbar button.start:not(.rec) .cir{background:var(--acc-fill);box-shadow:0 6px 22px -6px rgba(90,169,230,.6)}
+
+/* Get the app (components/GetTheApp.jsx) */
+.gta{position:relative;background:var(--surface);background-image:linear-gradient(135deg,rgba(90,169,230,.18),rgba(91,196,196,.10))}
+.gta-t{font-size:19px;font-weight:650;letter-spacing:-.015em;padding-inline-end:36px}
+.gta-x{position:absolute;top:10px;inset-inline-end:10px;width:30px;height:30px;font-size:13px}
+.gta .btn{flex:1}
+.gta-steps{list-style:none;padding:0;margin:12px 0 14px;display:flex;flex-direction:column;gap:10px}
+.gta-steps li{display:flex;gap:12px;align-items:flex-start;line-height:1.4}
+.gta-n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--acc-fill,var(--acc));color:var(--on-acc);display:flex;align-items:center;justify-content:center;font-weight:650;font-size:14px}

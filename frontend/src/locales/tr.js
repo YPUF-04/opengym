@@ -2686,4 +2686,20 @@ export default {
   // Daily tracker (views/Daily.jsx)
   'All data stays on this device': 'Tüm veriler bu cihazda kalır',
   'Stored in this browser only. Export a backup in Data & backup now and then.': 'Sadece bu tarayıcıda saklanır. Ara sıra Veriler ve yedek bölümünden yedek al.',
+  // Daily tracker (views/Daily.jsx)
+  'Gearly': 'Gearly',
+  // Daily tracker (views/Daily.jsx)
+  'Open this page in Safari (not Chrome).': 'Bu sayfayı Safari ile aç (Chrome değil).',
+  'Tap the Share button at the bottom (the square with an arrow).': 'Alttaki Paylaş düğmesine dokun (oklu kare).',
+  'Scroll down and tap Add to Home Screen, then Add.': 'Aşağı kaydır, Ana Ekrana Ekle ve sonra Ekle de.',
+  'Open Gearly from the home screen: full screen, works offline.': 'Gearly ana ekrandan açılır: tam ekran, internetsiz de çalışır.',
+  'Install on iPhone': 'iPhone’a yükle',
+  'Your data stays on this phone. Export a backup in Settings now and then.': 'Verilerin bu telefonda kalır. Ara sıra Ayarlar’dan yedek al.',
+  'Gearly on your phone': 'Gearly telefonunda',
+  'Install it like an app: on its own icon, full screen, also offline.': 'Uygulama gibi yükle: kendi simgesi, tam ekran, internetsiz de.',
+  'Android': 'Android',
+  'iPhone': 'iPhone',
+  'Download for Android': 'Android için indir',
+  'The APK from GitHub. Open it on the phone to install.': 'GitHub’daki APK dosyası. Yüklemek için telefonda aç.',
+  'Safari: Share, then Add to Home Screen': 'Safari: Paylaş, sonra Ana Ekrana Ekle',
 }

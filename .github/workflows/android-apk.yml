@@ -1,0 +1,96 @@
+# Builds the Gearly Android APK and publishes it as a GitHub release (download it on the phone
+# from https://github.com/YPUF-04/opengym/releases/latest). The app checks the same releases for
+# updates (frontend/src/lib/update.js), so a new version number in frontend/package.json makes
+# every installed phone offer the update.
+#
+# Signing: with the repository secrets ANDROID_KEYSTORE_B64 (the keystore, base64),
+# ANDROID_KEYSTORE_PASSWORD and ANDROID_KEY_ALIAS set, the APK is signed with that key, and each
+# new version installs over the last one. Without them a throwaway key is made for the run: the
+# APK installs fine, but the next version will not install over it (uninstall first, after
+# exporting a backup). docs/GEARLY_KURULUM.md shows how to make the key once.
+#
+# Only 180 px exercise media go in (catalogue/media), as everywhere outside the release machine.
+name: Android APK
+
+on:
+  push:
+    branches: [main, claude/daily-routine-tracker]
+    paths:
+      - 'frontend/**'
+      - 'catalogue/**'
+      - '.github/workflows/android-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+        working-directory: frontend
+      - name: Web build for the phone, media, cap sync
+        run: npm run build:mobile
+        working-directory: frontend
+      - name: Gradle (sideload flavour, release)
+        run: ./gradlew --no-daemon assembleSideloadRelease
+        working-directory: frontend/android
+      - name: Sign
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KS_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          set -e
+          VER=$(node -p "require('./frontend/package.json').version")
+          echo "VER=$VER" >> "$GITHUB_ENV"
+          if [ -n "$KS_B64" ]; then
+            echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+            KS="$RUNNER_TEMP/release.keystore"; PASS="$KS_PASS"; ALIAS="$KS_ALIAS"
+          else
+            echo "::warning::No signing secrets set: a throwaway key signs this APK, so the next version will not install over it"
+            PASS=$(openssl rand -hex 16); ALIAS=gearly; KS="$RUNNER_TEMP/throwaway.keystore"
+            keytool -genkeypair -keystore "$KS" -alias "$ALIAS" -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "$PASS" -keypass "$PASS" -dname "CN=Gearly" >/dev/null
+          fi
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          IN=$(ls frontend/android/app/build/outputs/apk/sideload/release/*.apk | head -1)
+          mkdir -p out
+          "$BT/zipalign" -f -p 4 "$IN" out/aligned.apk
+          "$BT/apksigner" sign --ks "$KS" --ks-pass "pass:$PASS" --ks-key-alias "$ALIAS" --out "out/Gearly-$VER.apk" out/aligned.apk
+          "$BT/apksigner" verify --print-certs "out/Gearly-$VER.apk" | grep -i "SHA-256"
+          (cd out && sha256sum "Gearly-$VER.apk" | cut -d' ' -f1 > "Gearly-$VER.apk.sha256")
+          rm out/aligned.apk
+          ls -la out
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: gearly-apk
+          path: out/
+      - name: Publish the release (main only)
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v$VER"
+          NOTES="Gearly $VER for Android. Download Gearly-$VER.apk on the phone and open it to install. Your data stays on the phone; export a backup in Settings now and then."
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" out/* --clobber
+          else
+            gh release create "$TAG" out/* --target "$GITHUB_SHA" --title "Gearly $VER" --notes "$NOTES" --latest
+          fi

@@ -23,6 +23,7 @@ import { wakeLockSupported } from '../lib/wakelock.js'
 import { t, tn, LANGS, INSTR_LANGS, EXERCISE_NAME_LANGS, baseLang, dateLocale } from '../lib/i18n.js'
 import { effectiveLang } from '../lib/default-lang.js'
 import { DEMO, PERSONAL, REPO } from '../lib/demo.js'
+import { openAndroidDownload, iphoneStepsSheet } from '../components/GetTheApp.jsx'
 import { MOBILE, isAndroid, shareExport, shareExportBlob, syncReminder } from '../lib/mobile.js'
 import { NUDGE_COPY, NUDGE_TONES, toneOf } from '../lib/nudge.js'
 import { referencedFiles } from '../lib/media-refs.js'
@@ -982,6 +983,10 @@ export default function Settings({ page = null, find = null, via = null, entryKe
       {/* "Add to Home screen": not inside the phone app, and not once it is installed. Safari's
           Share menu only on Apple (an iPad says Macintosh too); Windows and Linux get Chrome's
           install icon instead of an iPhone tip. */}
+      {!MOBILE && <Section title={t('Gearly on your phone')}>
+        <Row icon="download" iconTint="var(--green)" title={t('Download for Android')} subtitle={t('The APK from GitHub. Open it on the phone to install.')} accessory="chevron" onClick={openAndroidDownload} />
+        <Row icon="phoneScreen" iconTint="var(--blue)" title={t('Install on iPhone')} subtitle={t('Safari: Share, then Add to Home Screen')} accessory="chevron" onClick={iphoneStepsSheet} />
+      </Section>}
       {!MOBILE && !standalone() && <Section title={t('Tip')}>
         <Row icon="share" iconTint="var(--blue)"
           title={IS_ANDROID ? t('In Chrome: ⋮ menu → Add to Home screen') : APPLE_UA ? t('In Safari: Share → Add to Home Screen') : t('In Chrome or Edge: the install icon in the address bar')}

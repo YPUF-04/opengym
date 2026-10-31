@@ -20,6 +20,8 @@ import { weighInAt } from '../lib/bodyweight.js'
 import WeightRate from '../components/WeightRate.jsx'
 import { SeasonDeco } from '../components/Seasonal.jsx'
 import { dayProgress, dayOf, foodTotals, habitStreak } from '../lib/daily.js'
+import GetTheApp from '../components/GetTheApp.jsx'
+import { MOBILE } from '../lib/mobile.js'
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
 export default function Home() {
@@ -165,13 +167,15 @@ export default function Home() {
       <SeasonDeco spot="home-hero" />
     </div>
 
+    {!MOBILE && <GetTheApp />}
+
     {/* The daily tracker (views/Daily.jsx): today's routine ticks, calories and steps at a glance. */}
     {(() => {
       const p = dayProgress(S, todayISO()), d = dayOf(S, todayISO()), food = foodTotals(d.food), streak = habitStreak(S, todayISO())
       return <div className="card tappable dly-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/daily'))}>
         <div className="row between">
           <div className="row" style={{ gap: 9, minWidth: 0 }}>
-            <span className="lrow-i" style={{ background: 'var(--purple)' }}><Icon name="checkCircle" /></span>
+            <span className="lrow-i" style={{ background: 'var(--teal)' }}><Icon name="checkCircle" /></span>
             <div style={{ minWidth: 0 }}>
               <div className="lbl2">{t('Daily')}</div>
               <div className="ttl">{p.total ? t('{0} of {1} tasks done', p.done, p.total) : t('Routine, food and activity')}</div>
