@@ -7,7 +7,12 @@ spor ve günlük takip uygulaması. Bu fork'ta (YPUF-04/opengym) eklenenler:
   günlük seri ve 5 haftalık takvim, beslenme (hazır yiyecek listesi ile kalori ve protein),
   adım, su, uyku, boy/BMI, hedef kilo ilerlemesi, kalori ihtiyacı hesabı (Mifflin-St Jeor) ve
   ekipmanına göre bugün için egzersiz önerileri.
-- Uygulamanın adı **Gearly**.
+- Uygulamanın adı **Gearly**, sakin mavi renkler ve yeni logo (Ayarlar → Look & Home'dan
+  başka renk de seçilebilir).
+- **Android APK**: GitHub her sürümde otomatik üretir, uygulama içinden güncelleme de gelir.
+- Ana sayfada ve Ayarlar'da **"Gearly telefonunda"**: Android indirme ve iPhone'a yükleme adımları.
+
+Adım adım, işaretlenebilir kurulum listesi de var (sohbette paylaşılan "Gearly Kurulum Listesi").
 
 openGym'den gelenler zaten hazır: her egzersizde son kaldırdığın kilo, tahmini maksimum (1RM),
 rekorlar (PR), otomatik kilo artırma, haftalık plan, istatistikler, vücut ölçüleri, ilerleme
@@ -41,6 +46,32 @@ yedek al (dosyayı iCloud Drive'a kaydet). Yeni cihazda aynı yerden **içe akta
 yüklersin. iPhone, uzun süre açılmayan web uygulamalarının verisini silebilir; ana ekrana eklemek
 bu riski azaltır ama yedek yine de şart.
 
+## Android'e yükleme
+
+1. Android telefonda Chrome ile `https://github.com/YPUF-04/opengym/releases/latest` adresini aç
+   (ya da Gearly web sürümünde ana sayfadaki **Android** düğmesine bas).
+2. **Assets** altında `Gearly-<sürüm>.apk` dosyasını indir (`.sha256` olanı değil).
+3. İndirileni aç; "bu kaynaktan izin verilmiyor" derse **Ayarlar → Bu kaynaktan izin ver**.
+4. **Yükle**. Play Protect uyarırsa **Diğer ayrıntılar → Yine de yükle**.
+
+APK, `.github/workflows/android-apk.yml` ile `main` dalına her değişiklikte yeniden yapılır. Yeni
+bir sürüm numarası (`frontend/package.json` içindeki `version`) uygulamada güncelleme olarak
+görünür.
+
+**İmza anahtarı:** repo ayarlarında `ANDROID_KEYSTORE_B64`, `ANDROID_KEYSTORE_PASSWORD` ve
+`ANDROID_KEY_ALIAS` gizli değerleri (Settings → Secrets → Actions) yoksa her yapım geçici bir
+anahtarla imzalanır; o zaman yeni sürüm eskinin üstüne kurulmaz (yedek al, sil, yeniden kur).
+Kalıcı anahtar için bilgisayarda Java ile:
+
+```bash
+keytool -genkeypair -keystore gearly.keystore -alias gearly -keyalg RSA -keysize 2048 -validity 10000
+base64 -w0 gearly.keystore   # çıkan uzun metin ANDROID_KEYSTORE_B64 olur
+```
+
+Şifreyi `ANDROID_KEYSTORE_PASSWORD`'a, `gearly` kelimesini `ANDROID_KEY_ALIAS`'a koy. Anahtar
+dosyasını ve şifreyi güvenli bir yerde sakla, kimseyle paylaşma; kaybedersen güncellemeler yine
+eskinin üstüne kurulmaz.
+
 ## 2. Telefon ve bilgisayar senkron olsun: kendi sunucun (Docker)
 
 Bilgisayarında ya da bir VPS'te (aylık birkaç dolar) çalışır, her cihaz aynı veriyi görür.
@@ -54,6 +85,13 @@ cp .env.example .env        # RP_ID ve ORIGIN'i kendi adresine göre düzenle
 docker compose up -d --build
 ```
 
+**Admin olmak için:** `.env` içinde ilk kurulumda `FIRST_USER_ADMIN=1` aç ve adresi kimseyle
+paylaşmadan önce ilk hesabı sen oluştur: ilk hesap otomatik admin olur. Sonradan eklemek için
+Ayarlar → Hesap → **Account ID**'ni `.env` içinde `ADMIN_UIDS=<id>` olarak yaz ve
+`docker compose up -d` çalıştır. Admin olunca Ayarlar → Hesap → **Admin dashboard**'da
+kullanıcıları, antrenmanlarını görürsün; `INVITE_ONLY=1` ile davet kodu üretip sadece
+arkadaşlarını alabilirsin.
+
 Giriş için passkey (Face ID) kullanılır ve bu **HTTPS** ister. Evde en kolayı Tailscale:
 ayrıntılar [SELF_HOSTING.md](SELF_HOSTING.md), [SELF_HOSTING_HTTPS.md](SELF_HOSTING_HTTPS.md) ve
 Mac için [SELF_HOSTING_MAC.md](SELF_HOSTING_MAC.md) dosyalarında. Sonra iPhone'da Safari ile
@@ -66,8 +104,11 @@ sunucu adresini açıp yine **Ana Ekrana Ekle**.
 - Gearly'yi kendi iPhone'una **gerçek uygulama** olarak kurmak için bir Mac, Xcode ve Apple
   geliştirici hesabı gerekir (ücretsiz hesapla uygulama 7 günde bir yeniden yüklenmeli; yıllık
   99 $ hesapla TestFlight ile rahat kurulur). Adımlar: [MOBILE.md](MOBILE.md).
-- **Android**: `npm run build:mobile` ve Android Studio ile APK üretilebilir, Play Store için
-  Google geliştirici hesabı (tek seferlik 25 $) gerekir.
+- **Android**: APK yukarıdaki gibi hazır. Play Store için Google geliştirici hesabı (tek
+  seferlik 25 $) ve kalıcı imza anahtarı gerekir.
+- **iPhone, Mac olmadan gerçek uygulama**: `ios.yml` iş akışı imzasız bir IPA üretebiliyor;
+  Sideloadly gibi bir araçla ücretsiz Apple hesabınla yüklenir ama 7 günde bir yenilenmesi
+  gerekir. Bu yüzden iPhone için önerilen yol Safari → Ana Ekrana Ekle.
 - **Lisans uyarısı**: egzersiz görselleri/animasyonları Gym visual'dan openGym için
   lisanslıdır (NOTICE.md). Kendin için kullanmak sorun değil, ama Gearly adıyla mağazada
   **herkese açık** yayınlamak istersen bu görseller için ayrıca lisans alman gerekir. Kod
