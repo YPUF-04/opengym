@@ -2464,3 +2464,50 @@ button.wl-summary{width:100%;padding:0 0 10px;text-align:start;border-radius:var
 .ch-q:active{background:var(--acc);color:var(--on-acc)}
 .ch-code{font-size:40px;font-weight:800;letter-spacing:.18em;margin:18px 0 20px;font-variant-numeric:tabular-nums;color:var(--acc)}
 .ch-code-in{text-align:center;font-size:26px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+
+/* Simple Home (components/SimpleHome.jsx) */
+.sh .card{margin-bottom:12px}
+.sh-coach{display:flex;align-items:center;gap:12px;cursor:pointer;background-image:linear-gradient(135deg,rgba(90,169,230,.16),rgba(91,196,196,.08))}
+.sh-coach.ask{align-items:flex-start;cursor:default;outline:1.5px solid var(--acc-line)}
+.sh-coach-ic{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--acc-fill,var(--acc));color:var(--on-acc);font-size:20px}
+.sh-coach-t{font-weight:600;font-size:16px;line-height:1.3;margin-bottom:2px}
+.sh-today{cursor:pointer}
+.sh-today .lbl2,.sh .lbl2{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--label-3)}
+.sh-today-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:6px}
+.sh-today-n{font-size:20px;font-weight:650;letter-spacing:-.015em;display:flex;align-items:center;gap:8px;line-height:1.25}
+.sh-weigh{display:flex;align-items:center;gap:12px;cursor:pointer}
+.sh-weigh>.icn{font-size:24px;color:var(--teal);flex:none}
+.sh-weigh b{font-size:16px;font-weight:600}
+.sh-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.sh-tile{background:var(--surface);border-radius:var(--r-card);padding:14px;display:flex;flex-direction:column;gap:2px;cursor:pointer;min-width:0}
+.sh-tile-h{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--label-2)}
+.sh-tile-v{font-size:26px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-top:4px}
+.sh-tile-v small{font-size:13px;font-weight:500;color:var(--label-2);letter-spacing:0}
+.sh-tile .dly-bar{margin:6px 0 8px}
+.sh-plus{display:flex;align-items:center;justify-content:center;gap:4px;height:38px;border-radius:10px;border:0;background:var(--acc-soft);color:var(--acc);font:inherit;font-weight:600;font-size:14px;cursor:pointer}
+.sh-plus:active{background:var(--acc);color:var(--on-acc)}
+.sh-row{display:flex;align-items:center;gap:12px;cursor:pointer}
+.sh-row b{font-weight:600}
+
+/* Coach setup (views/ProgramWizard.jsx) */
+.wz-progress{height:6px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin:4px 0 18px}
+.wz-progress>span{display:block;height:100%;background:var(--acc-fill,var(--acc));transition:width .3s}
+.wz-q{font-size:24px;font-weight:700;letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
+.wz-sub{margin:0 0 14px}
+.wz-choices{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.wz-choice{position:relative;display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:12px 16px;border-radius:16px;border:1.5px solid transparent;background:var(--surface);color:var(--label);font:inherit;text-align:start;cursor:pointer}
+.wz-choice>.icn{font-size:24px;color:var(--acc);flex:none}
+.wz-choice b{display:block;font-size:17px;font-weight:600}
+.wz-choice small{display:block;font-size:13.5px;color:var(--label-2);margin-top:2px}
+.wz-choice.on{border-color:var(--acc);background:var(--acc-soft)}
+.wz-choice .wz-ok{margin-inline-start:auto;color:var(--acc)}
+.wz-bells{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.wz-bell{height:52px;border-radius:12px;border:1.5px solid transparent;background:var(--surface);color:var(--label);font:inherit;font-weight:600;cursor:pointer}
+.wz-bell.on{border-color:var(--acc);background:var(--acc-soft);color:var(--acc)}
+.wz-next{position:sticky;bottom:calc(var(--sab) + 12px);margin-top:20px}
+.wz-done{text-align:center;padding:24px 0 8px}
+.wz-done-ic{font-size:56px;color:var(--green);display:grid;place-items:center}
+.wz-done h1{margin:8px 0 4px}
+.wz-ex{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--sep);font-size:14.5px}
+.sh-go{flex:none;width:auto;padding-inline:16px}
+.sh-coach.ask:not(:has(.btn.primary)){outline:0}

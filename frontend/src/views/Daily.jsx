@@ -120,7 +120,7 @@ function FoodSheet({ iso, close }) {
     <div style={{ height: 8 }} /><Button onClick={close}>{t('Done')}</Button>
   </>
 }
-const foodSheet = iso => openSheet(close => <FoodSheet iso={iso} close={close} />)
+export const foodSheet = iso => openSheet(close => <FoodSheet iso={iso} close={close} />)
 
 /* ---------------------------------- screen ---------------------------------- */
 

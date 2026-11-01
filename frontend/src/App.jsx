@@ -44,6 +44,7 @@ import Login from './views/Login.jsx'
 import MobileOnboarding from './views/MobileOnboarding.jsx'
 import PermissionSteps from './views/PermissionSteps.jsx'
 import Home from './views/Home.jsx'
+import SimpleHome from './components/SimpleHome.jsx'
 import Plan from './views/Plan.jsx'
 import Workout from './views/Workout.jsx'
 
@@ -76,6 +77,7 @@ const RoutineEdit = lazyView(() => import('./views/RoutineEdit.jsx'))
 const Stats = lazyView(() => import('./views/Stats.jsx'))
 const Daily = lazyView(() => import('./views/Daily.jsx'))
 const Challenges = lazyView(() => import('./views/Challenges.jsx'))
+const ProgramWizard = lazyView(() => import('./views/ProgramWizard.jsx'))
 const History = lazyView(() => import('./views/History.jsx'))
 const Library = lazyView(() => import('./views/Library.jsx'))
 const Muscles = lazyView(() => import('./views/Muscles.jsx'))
@@ -292,7 +294,8 @@ function Shell() {
 
   const view = l => (!authed ? <Login /> : needsMobileOnboarding ? <MobileOnboarding /> : permSteps ? <PermissionSteps /> : (
     <Routes location={l}>
-      <Route path="/home" element={<Home />} />
+      <Route path="/home" element={S.homeStyle === 'classic' ? <Home /> : <SimpleHome />} />
+      <Route path="/program" element={<ProgramWizard />} />
       {/* Gym check-in — switched off in Settings, the route falls through to the
           catch-all redirect below. */}
       {S.checkIn !== false && <Route path="/checkin" element={<CheckIn />} />}
