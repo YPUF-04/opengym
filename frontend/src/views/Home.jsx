@@ -19,6 +19,9 @@ import { dayNoteOf } from '../lib/day-notes.js'
 import { weighInAt } from '../lib/bodyweight.js'
 import WeightRate from '../components/WeightRate.jsx'
 import { SeasonDeco } from '../components/Seasonal.jsx'
+import { dayProgress, dayOf, foodTotals, habitStreak } from '../lib/daily.js'
+import GetTheApp from '../components/GetTheApp.jsx'
+import { MOBILE } from '../lib/mobile.js'
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
 export default function Home() {
@@ -107,7 +110,7 @@ export default function Home() {
   return <div className="narrow">
     <div className="hdr">
       <SeasonDeco spot="header-bats" />
-      <div><h1>{user ? t('Hi {0}', user.name) : 'openGym'}</h1><div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
+      <div><h1>{user ? t('Hi {0}', user.name) : 'Gearly'}</h1><div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
       <button className="iconbtn" onClick={() => nav('/settings')} aria-label={trouble ? t('Settings') + ', ' + t('Connection problem') : t('Settings')}><Icon name="gear" />{trouble && <span className="tab-dot" aria-hidden="true" />}</button>
     </div>
 
@@ -163,6 +166,27 @@ export default function Home() {
       </div>}
       <SeasonDeco spot="home-hero" />
     </div>
+
+    {!MOBILE && <GetTheApp />}
+
+    {/* The daily tracker (views/Daily.jsx): today's routine ticks, calories and steps at a glance. */}
+    {(() => {
+      const p = dayProgress(S, todayISO()), d = dayOf(S, todayISO()), food = foodTotals(d.food), streak = habitStreak(S, todayISO())
+      return <div className="card tappable dly-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/daily'))}>
+        <div className="row between">
+          <div className="row" style={{ gap: 9, minWidth: 0 }}>
+            <span className="lrow-i" style={{ background: 'var(--teal)' }}><Icon name="checkCircle" /></span>
+            <div style={{ minWidth: 0 }}>
+              <div className="lbl2">{t('Daily')}</div>
+              <div className="ttl">{p.total ? t('{0} of {1} tasks done', p.done, p.total) : t('Routine, food and activity')}</div>
+              <div className="ss">{[food.kcal ? fmtNum(food.kcal) + ' kcal' : null, food.protein ? fmtNum(food.protein) + ' g ' + t('Protein') : null, d.steps ? fmtNum(d.steps) + ' ' + t('Steps') : null, streak ? t('{0} day streak', streak) : null].filter(Boolean).join(' · ') || t('Tap to track your day')}</div>
+            </div>
+          </div>
+          {p.total ? <span className="tag acc">{p.pct}%</span> : <Icon name="chevronRight" className="chev" />}
+        </div>
+        {!!p.total && <div className="dly-bar" style={{ marginTop: 10 }}><span style={{ width: p.pct + '%', background: 'var(--acc)' }} /></div>}
+      </div>
+    })()}
 
     {/* Jump to the gym check-in cards (QR membership codes). Shown here as a quick tap on
         arrival at the gym; folds away per user via the "Gym check-in" switch in Settings. */}

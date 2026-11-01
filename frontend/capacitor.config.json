@@ -1,8 +1,8 @@
 {
   "appId": "ch.duartesantos.opengym",
-  "appName": "openGym",
+  "appName": "Gearly",
   "webDir": "dist",
-  "backgroundColor": "#0c0e12",
+  "backgroundColor": "#070b12",
   "android": {
     "allowMixedContent": true
   },
@@ -14,7 +14,7 @@
       "launchShowDuration": 8000,
       "launchAutoHide": true,
       "launchFadeOutDuration": 180,
-      "backgroundColor": "#0c0e12",
+      "backgroundColor": "#070b12",
       "showSpinner": false
     }
   }

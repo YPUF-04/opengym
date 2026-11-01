@@ -8,7 +8,7 @@
 # boot straight into guest mode with a seeded example history (see frontend/src/lib/demo.js).
 # The exercise stills and animations (180 px) come from catalogue/media and are staged next to
 # the build by scripts/catalogue/stage-media.mjs, so the demo serves them from its own origin.
-name: Deploy demo to GitHub Pages
+name: Deploy Gearly to GitHub Pages
 
 on:
   push:
@@ -45,7 +45,9 @@ jobs:
       - run: npm run build
         working-directory: frontend
         env:
-          VITE_DEMO: '1'
+          # Gearly: the personal build (your own data, no example history). Set VITE_DEMO: '1'
+          # instead for the demo with example data.
+          VITE_PERSONAL: '1'
       # The 180 px stills and animations from catalogue/media, served next to the demo
       - run: node scripts/catalogue/stage-media.mjs frontend/dist
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
