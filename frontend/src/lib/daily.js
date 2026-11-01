@@ -5,7 +5,8 @@
 //   S.habits    = [{ id, name, days: [0..6] (Date#getDay, empty = every day), slot }]
 //   S.daily     = { '2026-10-31': { done: { [habitId]: true }, steps, water, sleep, food: [...] , _ts } }
 //   S.bodyInfo  = { height (cm), age, sex: 'male'|'female', activity, goal: 'lose'|'keep'|'gain' }
-//   S.dailyGoals = { steps, water (ml), sleep (h), kcal, protein } (null = worked out for you)
+//   S.dailyGoals = { steps, water (ml), sleep (h), kcal, protein (g), proteinPerKg } (null = worked out for you;
+//                   proteinPerKg sets protein from your weight, a fixed `protein` wins over it)
 //
 // S.daily is one of the stamped maps (lib/sync-merge.js STAMPED_MAPS): each day carries its own
 // `_ts`, so a day edited on the phone and another on the desktop both survive a sync.
@@ -148,7 +149,7 @@ export function goalsOf(S, kg) {
     water: num(set.water) ?? DEFAULT_GOALS.water,
     sleep: num(set.sleep) ?? DEFAULT_GOALS.sleep,
     kcal: num(set.kcal) ?? e?.target ?? null,
-    protein: num(set.protein) ?? proteinTarget(kg, body.goal),
+    protein: num(set.protein) ?? (num(set.proteinPerKg) && num(kg) ? Math.round(kg * set.proteinPerKg) : null) ?? proteinTarget(kg, body.goal),
   }
 }
 

@@ -73,6 +73,8 @@ describe('body', () => {
     const S = { bodyInfo: { height: 180, age: 25, sex: 'male', activity: 1.55, goal: 'keep' }, dailyGoals: { steps: 8000 } }
     expect(goalsOf(S, 80)).toEqual({ steps: 8000, water: 2500, sleep: 8, kcal: 2798, protein: 128 })
     expect(goalsOf({}, null).kcal).toBe(null)
+    expect(goalsOf({ dailyGoals: { proteinPerKg: 2.2 } }, 80).protein).toBe(176)
+    expect(goalsOf({ dailyGoals: { proteinPerKg: 2.2, protein: 150 } }, 80).protein).toBe(150)
   })
   it('food totals', () => {
     expect(foodTotals([{ kcal: 75, protein: 6.5 }, { kcal: 120, protein: 24 }])).toEqual({ kcal: 195, protein: 30.5 })
