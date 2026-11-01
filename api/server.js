@@ -37,6 +37,7 @@ import { effectiveRoutineId } from './queue.js';
 import { stampPut } from './sync-stamps.js';
 import { atomicWrite as durableWrite } from './durable.js';
 import { excusedOn, nudgeFor, nudgeWindowOpen, toneOf } from './nudge.js';
+import * as contests from './challenges.js';
 
 const PORT = +(process.env.PORT || 3000);
 const DATA = process.env.DATA_DIR || '/data';
@@ -148,6 +149,8 @@ db.users = db.users || [];
 db.creds = db.creds || [];
 db.subs = db.subs || [];
 db.invites = db.invites || [];
+// Challenges between users (challenges.js): created with a code, joined, logged, ranked.
+db.challenges = Array.isArray(db.challenges) ? db.challenges : [];
 db.deviceLinks = db.deviceLinks || [];   // unused one-time device links, hashed (device-link.js)
 const isAdmin = user => !!user && (user.admin === true || ADMIN_UIDS.includes(user.id));
 // One owner per instance, any number of admins. Admins run the place day to day (users, invites,
@@ -2693,6 +2696,58 @@ const routes = {
       const p = presence.get(user.id);
       if (p && p.hiddenAt === undefined) p.hiddenAt = Date.now();
     } else presence.delete(user.id);
+    json(res, 200, { ok: true });
+  },
+
+  /* ---------- challenges (challenges.js) ---------- */
+  // Push-up weeks, plank battles, step races between the people on this instance. Everyone signed
+  // in can create one and share its six-character code; only members see it.
+  'GET /api/challenges': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    const nameOf = uid => (db.users.find(u => u.id === uid) || {}).name || '?';
+    json(res, 200, { challenges: contests.mine(db.challenges, user.id).map(c => contests.view(c, user.id, nameOf)), kinds: Object.keys(contests.KINDS) });
+  },
+
+  'POST /api/challenges/create': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    db.challenges = contests.prune(db.challenges, db.users.map(u => u.id));
+    const out = contests.create(db.challenges, user.id, await readBody(req));
+    if (out.error) return json(res, 400, { error: out.error });
+    db.challenges.push(out.challenge);
+    saveDb();
+    json(res, 200, { id: out.challenge.id, code: out.challenge.code });
+  },
+
+  'POST /api/challenges/join': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    const body = await readBody(req);
+    const out = contests.join(db.challenges, user.id, body.code);
+    if (out.error) return json(res, out.error === 'no such code' ? 404 : 400, { error: out.error });
+    saveDb();
+    json(res, 200, { id: out.challenge.id });
+  },
+
+  'POST /api/challenges/entry': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    const body = await readBody(req);
+    const out = body.remove
+      ? contests.removeEntry(db.challenges, user.id, text(body.id), text(body.remove))
+      : contests.addEntry(db.challenges, user.id, text(body.id), body.value);
+    if (out.error) return json(res, 400, { error: out.error });
+    saveDb();
+    json(res, 200, { ok: true });
+  },
+
+  'POST /api/challenges/leave': async (req, res) => {
+    const user = readSession(req);
+    if (!user) return json(res, 401, { error: 'not signed in' });
+    const body = await readBody(req);
+    db.challenges = contests.leave(db.challenges, user.id, text(body.id));
+    saveDb();
     json(res, 200, { ok: true });
   },
 

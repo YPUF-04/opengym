@@ -141,6 +141,8 @@ servers:
 tags:
   - name: meta
     description: Health and public configuration
+  - name: challenges
+    description: Challenges between users on this instance (challenges.js)
   - name: auth
     description: Passkey (WebAuthn) registration and login, sessions
   - name: pairing
@@ -2254,6 +2256,110 @@ paths:
               schema: { $ref: '#/components/schemas/Ok' }
         '401': { $ref: '#/components/responses/Unauthorized' }
 
+  /api/challenges:
+    get:
+      tags: [challenges]
+      operationId: listChallenges
+      summary: The challenges you are in, with their leaderboards
+      description: |
+        Challenges you created or joined, newest first; ended ones stay listed for 30 days.
+        Each carries its share code, the leaderboard (names and scores, your row marked `me`)
+        and your own entries of the last 24 hours, so you can take one back.
+      responses:
+        '200':
+          description: Your challenges
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  challenges: { type: array, items: { type: object } }
+                  kinds: { type: array, items: { type: string } }
+        '401': { description: Not signed in }
+  /api/challenges/create:
+    post:
+      tags: [challenges]
+      operationId: createChallenge
+      summary: Start a challenge and get its share code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [kind, days, name]
+              properties:
+                kind: { type: string, enum: [pushups, squats, situps, pullups, plank, steps, workouts, custom] }
+                days: { type: integer, minimum: 1, maximum: 90 }
+                name: { type: string, maxLength: 60 }
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: string }
+                  code: { type: string, description: Six characters, no 0/O or 1/I }
+        '400': { description: Bad kind, length or name, or too many challenges }
+        '401': { description: Not signed in }
+  /api/challenges/join:
+    post:
+      tags: [challenges]
+      operationId: joinChallenge
+      summary: Join a challenge by its code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [code]
+              properties:
+                code: { type: string }
+      responses:
+        '200': { description: Joined (or already a member) }
+        '400': { description: Ended, full, or too many challenges }
+        '401': { description: Not signed in }
+        '404': { description: No challenge has this code }
+  /api/challenges/entry:
+    post:
+      tags: [challenges]
+      operationId: challengeEntry
+      summary: Log what you did, or take back one of your entries
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id]
+              properties:
+                id: { type: string, description: The challenge }
+                value: { type: integer, description: Reps, seconds or steps; 1 up to the kind's limit }
+                remove: { type: string, description: An entry id of yours to take back instead }
+      responses:
+        '200': { description: Saved }
+        '400': { description: Not a member, ended, value out of range, or not your entry }
+        '401': { description: Not signed in }
+  /api/challenges/leave:
+    post:
+      tags: [challenges]
+      operationId: leaveChallenge
+      summary: Leave a challenge (its creator leaving deletes it)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id]
+              properties:
+                id: { type: string }
+      responses:
+        '200': { description: Left }
+        '401': { description: Not signed in }
   /api/activity:
     post:
       tags: [activity]

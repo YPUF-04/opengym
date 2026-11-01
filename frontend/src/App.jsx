@@ -75,6 +75,7 @@ const CheckIn = lazyView(() => import('./views/CheckIn.jsx'))
 const RoutineEdit = lazyView(() => import('./views/RoutineEdit.jsx'))
 const Stats = lazyView(() => import('./views/Stats.jsx'))
 const Daily = lazyView(() => import('./views/Daily.jsx'))
+const Challenges = lazyView(() => import('./views/Challenges.jsx'))
 const History = lazyView(() => import('./views/History.jsx'))
 const Library = lazyView(() => import('./views/Library.jsx'))
 const Muscles = lazyView(() => import('./views/Muscles.jsx'))
@@ -299,6 +300,7 @@ function Shell() {
       <Route path="/plan/r/:id" element={<RoutineEdit />} />
       <Route path="/workout" element={<Workout />} />
       <Route path="/daily" element={<Daily />} />
+      <Route path="/challenges" element={<Challenges />} />
       <Route path="/stats" element={<Stats />} />
       <Route path="/history" element={<History />} />
       <Route path="/library" element={<Library />} />
