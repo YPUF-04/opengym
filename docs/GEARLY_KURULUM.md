@@ -85,6 +85,20 @@ cp .env.example .env        # RP_ID ve ORIGIN'i kendi adresine göre düzenle
 docker compose up -d --build
 ```
 
+**Hesap açma ve yarışmalar için önerilen `.env` ayarları:**
+
+```bash
+PASSWORD_LOGIN=1      # isim + şifre ile hesap açılabilsin (Face ID/passkey de kalır)
+FIRST_USER_ADMIN=1    # ilk açılan hesap admin olur: adresi paylaşmadan önce ilk hesabı sen aç
+INVITE_ONLY=1         # sadece davet kodu verdiklerin hesap açabilsin
+ALLOW_GUEST=0         # hesapsız girişi kapat
+```
+
+Arkadaşların adresi açar, **Hesap oluştur** der, senin Admin dashboard'dan ürettiğin davet
+kodunu, bir isim ve şifre girer. Sonra ana sayfadaki **Yarışmalar** kartından şınav, squat,
+mekik, barfiks, plank, adım ya da antrenman sayısı yarışması başlatılır; 6 harfli kod
+paylaşılır, herkes yaptığını girer, sıralama herkese aynı görünür.
+
 **Admin olmak için:** `.env` içinde ilk kurulumda `FIRST_USER_ADMIN=1` aç ve adresi kimseyle
 paylaşmadan önce ilk hesabı sen oluştur: ilk hesap otomatik admin olur. Sonradan eklemek için
 Ayarlar → Hesap → **Account ID**'ni `.env` içinde `ADMIN_UIDS=<id>` olarak yaz ve

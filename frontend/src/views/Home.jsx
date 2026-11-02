@@ -188,6 +188,20 @@ export default function Home() {
       </div>
     })()}
 
+    {/* Challenges with friends (views/Challenges.jsx) */}
+    <div className="card tappable" style={{ cursor: 'pointer' }} {...tappable(() => nav('/challenges'))}>
+      <div className="row between">
+        <div className="row" style={{ gap: 9 }}>
+          <span className="lrow-i" style={{ background: 'var(--orange)' }}><Icon name="trophy" /></span>
+          <div>
+            <div className="lbl2">{t('Challenges')}</div>
+            <div className="ttl">{t('Push-up race with friends')}</div>
+          </div>
+        </div>
+        <Icon name="chevronRight" className="chev" />
+      </div>
+    </div>
+
     {/* Jump to the gym check-in cards (QR membership codes). Shown here as a quick tap on
         arrival at the gym; folds away per user via the "Gym check-in" switch in Settings. */}
     {S.checkIn !== false && (
